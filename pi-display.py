@@ -15,6 +15,7 @@ from dot3k.menu import Menu, MenuOption
 from plugins.idle_display import IdleDisplay
 from plugins.utils import Backlight, Contrast
 from plugins.clock import Clock
+from plugins.status import SystemStatus
 
 # control redraw with this
 DO_REDRAW = 1
@@ -45,8 +46,8 @@ def system_power(mode='restart'):
 menu = Menu(
     structure={
         'Clock': Clock(backlight),
+        'Status': SystemStatus(),
         'Network': MenuOption(),
-        'Usage': MenuOption(),
         'Disk': MenuOption(),
         'Updates': MenuOption(),
         'Power': {
