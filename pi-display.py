@@ -12,9 +12,12 @@ import dothat.lcd as lcd
 import dothat.touch as touch
 from dot3k.menu import Menu, MenuOption
 
-from plugins.idledisplay import IdleDisplay
+from plugins.idle_display import IdleDisplay
 from plugins.utils import Backlight, Contrast
 from plugins.clock import Clock
+
+# control redraw with this
+DO_REDRAW = 1
 
 # catch interrupt and turn everything off
 def signal_handler(sig, frame):
@@ -25,6 +28,17 @@ signal.signal(signal.SIGINT, signal_handler)
 
 def interrupt_self():
     os.kill(os.getpid(), signal.SIGINT)
+
+def system_power(mode='restart'):
+    # subprocess isn't quick enough to beat lcd redraw, so disable
+    global DO_REDRAW
+    DO_REDRAW = 0
+    backlight.off()
+    lcd.clear()
+    if mode == 'restart':
+        subprocess.call(['shutdown', '-r', 'now'])
+    elif mode == 'shutdown':
+        subprocess.call(['shutdown', 'now'])
 
 # nested dicts define menus/submenus to display
 # instances of classes derived from MenuOption used as menu items
@@ -37,8 +51,8 @@ menu = Menu(
         'Updates': MenuOption(),
         'Power': {
             'Display off': IdleDisplay(backlight),
-            'Restart': MenuOption(),
-            'Shutdown': MenuOption()
+            'Restart': lambda:system_power('restart'),
+            'Shutdown': lambda:system_power('shutdown')
         },
         'Settings': {
             'Contrast': Contrast(lcd),
@@ -53,6 +67,6 @@ menu = Menu(
 # use touch module to control menu
 touch.bind_defaults(menu)
 
-while 1:
+while DO_REDRAW:
     menu.redraw()
     time.sleep(0.05)

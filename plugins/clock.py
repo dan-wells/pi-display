@@ -115,7 +115,7 @@ class Clock(MenuOption):
         menu.write_row(0, time.strftime('  %a %H:%M:%S  '))
 
         # row separator
-        menu.write_row(1, '-' * 16)
+        menu.write_row(1, ' {0} '.format('-' * 14))
 
         if self.idling:
             menu.clear_row(2)

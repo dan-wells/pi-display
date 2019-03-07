@@ -1,4 +1,3 @@
-#import dot3k.backlight as backlight
 from dot3k.menu import MenuOption
 from sys import version_info
 
@@ -6,7 +5,6 @@ if version_info[0] >= 3:
     import configparser as ConfigParser
 else:
     import ConfigParser
-
 
 # when called as a menu option inside Menu structure, this inherits
 # Menu config into self.config. when called as idle_handler, that
@@ -35,4 +33,5 @@ class IdleDisplay(MenuOption):
         self.backlight.off()
 
     def cleanup(self):
+        # reset backlight on resume
         self.backlight.rgb(self.r, self.g, self.b)
