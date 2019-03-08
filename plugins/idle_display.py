@@ -43,6 +43,7 @@ class IdleDisplay(MenuOption):
 
     def redraw(self, menu):
         # make sure any modified brightness/backlight settings are saved
+        # TODO for some reason this doesn't work for 'Display off' option
         if self.config != menu.config:
             menu.save()
             self.config.read('dot3k.cfg')

@@ -49,11 +49,12 @@ class Clock(MenuOption):
     def load_options(self):
         self.dim_hour = int(self.get_option('Clock', 'dim', str(self.dim_hour)))
         self.bright_hour = int(self.get_option('Clock', 'bright', str(self.bright_hour)))
+        self.brightness = float(self.get_option('Display', 'brightness', 1.0))
 
     def cleanup(self):
         self.running = False
         time.sleep(0.01)
-        self.set_backlight(1.0)
+        self.set_backlight(self.brightness)
         self.is_setup = False
 
     def left(self):
@@ -111,14 +112,14 @@ class Clock(MenuOption):
 
         # want to keep manual control of brightness persistent, so only
         # auto-adjust here if we're at full brightness to start
-        brightness = float(self.get_option('Display', 'brightness', 1.0))
-        if int(brightness) == 1.0:
+        self.brightness = float(self.get_option('Display', 'brightness', 1.0))
+        if int(self.brightness) == 1.0:
             if hour > self.dim_hour:
-                brightness = 1.0 - ((hour - self.dim_hour) / (24.0 - self.dim_hour))
+                self.brightness = 1.0 - ((hour - self.dim_hour) / (24.0 - self.dim_hour))
             elif hour < self.bright_hour:
-                brightness = 1.0 * (hour / self.bright_hour)
+                self.brightness = 1.0 * (hour / self.bright_hour)
 
-            self.set_backlight(brightness)
+            self.set_backlight(self.brightness)
 
         menu.write_row(0, time.strftime('  %a %H:%M:%S  '))
 

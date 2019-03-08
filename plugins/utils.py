@@ -301,3 +301,8 @@ class Brightness(MenuOption):
         menu.clear_row(2)
 
         self.set_brightness(self.brightness)
+
+    def cleanup(self):
+        # this will force custom chars to be redefined on reentry to this app
+        self._icons_setup = False
+

@@ -42,6 +42,8 @@ def system_power(mode='restart'):
     elif mode == 'shutdown':
         subprocess.call(['shutdown', 'now'])
 
+#idle_handler = IdleDisplay(backlight)
+
 # nested dicts define menus/submenus to display
 # instances of classes derived from MenuOption used as menu items
 menu = Menu(
@@ -52,7 +54,7 @@ menu = Menu(
         'Disk': DiskUsage(),
         'Updates': MenuOption(),
         'Power': {
-            'Display off': IdleDisplay(backlight),
+            'Display Off': IdleDisplay(backlight),
             'Restart': lambda:system_power('restart'),
             'Shutdown': lambda:system_power('shutdown')
         },
@@ -64,7 +66,7 @@ menu = Menu(
     },
     lcd=lcd,
     idle_handler=IdleDisplay(backlight),
-    idle_time=10
+    idle_time=60
     )
 
 # use touch module to control menu
