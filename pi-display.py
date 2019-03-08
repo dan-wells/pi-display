@@ -16,6 +16,7 @@ from plugins.idle_display import IdleDisplay
 from plugins.utils import Backlight, Contrast
 from plugins.clock import Clock
 from plugins.status import SystemStatus
+from plugins.disk import DiskUsage
 
 # control redraw with this
 DO_REDRAW = 1
@@ -48,7 +49,7 @@ menu = Menu(
         'Clock': Clock(backlight),
         'Status': SystemStatus(),
         'Network': MenuOption(),
-        'Disk': MenuOption(),
+        'Disk': DiskUsage(),
         'Updates': MenuOption(),
         'Power': {
             'Display off': IdleDisplay(backlight),

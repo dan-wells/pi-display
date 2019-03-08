@@ -5,17 +5,13 @@ import time
 
 from dot3k.menu import MenuOption
 
-def run_cmd(cmd):
-    result = subprocess.run(cmd.split(' '), stdout=subprocess.PIPE)
-    return result
-
 class SystemStatus(MenuOption):
     def __init__(self):
         MenuOption.__init__(self)
         self.uptime_pat = re.compile('up( (?P<days>\d+) days,)?\s+((?P<hours>\d+):)?(?P<mins>\d+)( min)?,')
 
     def get_uptime(self):
-        result = run_cmd('uptime')
+        result = subprocess.run(['uptime'], stdout=subprocess.PIPE)
         # decode bytes-like object to str
         result_str = result.stdout.decode('utf8').strip()
         uptime_match = re.search(self.uptime_pat, result_str)
