@@ -18,6 +18,7 @@ from plugins.clock import Clock, SimpleClock
 from plugins.status import SystemStatus
 from plugins.disk import DiskUsage
 from plugins.pacman import PacmanStats
+from plugins.network import NetworkStatus
 
 # control redraw with this
 DO_REDRAW = 1
@@ -54,7 +55,7 @@ menu = Menu(
             'Restart': lambda:system_power('restart'),
             'Shutdown': lambda:system_power('shutdown')
         },
-        'Network': MenuOption(),
+        'Network': NetworkStatus(),
         'Updates': PacmanStats(),
         'Clock': SimpleClock(),
         'Settings': {
