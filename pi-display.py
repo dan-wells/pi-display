@@ -53,9 +53,9 @@ menu = Menu(
     config_file='/home/dan/displayotron/pi-display/dot3k.cfg',
     structure={
         'Power': {
-            'Display Off': IdleDisplay(backlight),
             'Restart': lambda:system_power('restart'),
-            'Shutdown': lambda:system_power('shutdown')
+            'Shutdown': lambda:system_power('shutdown'),
+            'Display Off': IdleDisplay(backlight)
         },
         'Network': NetworkStatus(),
         'Updates': PacmanStats(),
