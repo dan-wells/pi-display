@@ -2,6 +2,20 @@ import time
 
 from dot3k.menu import MenuOption
 
+class SimpleClock(MenuOption):
+    def __init__(self):
+        MenuOption.__init__(self)
+
+    def redraw(self, menu):
+        time_str = time.strftime('  %a %H:%M:%S  ')
+        menu.write_row(0, time_str)
+
+        sep = '{0: ^16}'.format('-' * 14)
+        menu.write_row(1, sep)
+
+        date_str = time.strftime('    %d %b %y   ')
+        menu.write_row(2, date_str)
+
 
 class Clock(MenuOption):
     def __init__(self, backlight=None):

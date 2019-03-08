@@ -14,7 +14,7 @@ from dot3k.menu import Menu, MenuOption
 
 from plugins.idle_display import IdleDisplay
 from plugins.utils import Backlight, Contrast, Brightness
-from plugins.clock import Clock
+from plugins.clock import Clock, SimpleClock
 from plugins.status import SystemStatus
 from plugins.disk import DiskUsage
 
@@ -48,21 +48,21 @@ def system_power(mode='restart'):
 # instances of classes derived from MenuOption used as menu items
 menu = Menu(
     structure={
-        'Clock': Clock(backlight),
-        'Status': SystemStatus(),
-        'Network': MenuOption(),
-        'Disk': DiskUsage(),
-        'Updates': MenuOption(),
         'Power': {
             'Display Off': IdleDisplay(backlight),
             'Restart': lambda:system_power('restart'),
             'Shutdown': lambda:system_power('shutdown')
         },
+        'Network': MenuOption(),
+        'Updates': MenuOption(),
+        'Clock': SimpleClock(),
         'Settings': {
             'Brightness': Brightness(backlight),
             'Backlight': Backlight(backlight),
             'Contrast': Contrast(lcd)
-        }
+        },
+        'Disk': DiskUsage(),
+        'Status': SystemStatus(),
     },
     lcd=lcd,
     idle_handler=IdleDisplay(backlight),
