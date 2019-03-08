@@ -20,8 +20,13 @@ class PacmanStats(MenuOption):
             self.last_update_set = 1
 
     def get_update_count(self):
-        update_list = subprocess.check_output(['checkupdates'])
-        self.update_count = len(update_list.decode('utf8').split('\n'))
+        result = subprocess.check_output(['checkupdates'])
+        update_list = result.decode('utf8').split('\n')
+        # this is [''] if no updates available
+        if update_list[0]:
+            self.update_count = len(update_list)
+        else:
+            self.update_count = 0
         self.update_count_set = 1
 
     def redraw(self, menu):
