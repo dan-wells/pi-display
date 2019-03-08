@@ -74,77 +74,73 @@ class Backlight(MenuOption):
         if self.mode == 6:
             return False
 
-        if self.mode == 0:
+        if self.mode == 0:  # r
+            self.r += 1
+            if self.r > 255:
+                self.r = 0
+            self.from_rgb()
+        elif self.mode == 1:  # g
+            self.g += 1
+            if self.g > 255:
+                self.g = 0
+            self.from_rgb()
+        elif self.mode == 2:  # b
+            self.b += 1
+            if self.b > 255:
+                self.b = 0
+            self.from_rgb()
+
+        elif self.mode == 3:  # hue
             self.hue += (1.0 / 359.0)
             if self.hue > 1:
                 self.hue = 0
             self.from_hue()
-
-        elif self.mode == 1:  # sat
+        elif self.mode == 4:  # sat
             self.sat += 1
             if self.sat > 100:
                 self.sat = 0
             self.from_hue()
-
-        elif self.mode == 2:  # val
+        elif self.mode == 5:  # val
             self.val += 1
             if self.val > 100:
                 self.val = 0
             self.from_hue()
 
-        else:  # rgb
-            if self.mode == 3:  # r
-                self.r += 1
-                if self.r > 255:
-                    self.r = 0
-            elif self.mode == 4:  # g
-                self.g += 1
-                if self.g > 255:
-                    self.g = 0
-            elif self.mode == 5:  # b
-                self.b += 1
-                if self.b > 255:
-                    self.b = 0
-
-            self.from_rgb()
-
         self.update_bl()
         return True
 
     def left(self):
-        if self.mode == 0:
+        if self.mode == 0:  #r
+            self.r -= 1
+            if self.r < 0:
+                self.r = 255
+            self.from_rgb()
+        elif self.mode == 1:  # g
+            self.g -= 1
+            if self.g < 0:
+                self.g = 255
+            self.from_rgb()
+        elif self.mode == 2:  # b
+            self.b -= 1
+            if self.b < 0:
+                self.b = 255
+            self.from_rgb()
+
+        elif self.mode == 3:  # hue
             self.hue -= (1.0 / 359.0)
             if self.hue < 0:
                 self.hue = 1
             self.from_hue()
-
-        elif self.mode == 1:  # sat
+        elif self.mode == 4:  # sat
             self.sat -= 1
             if self.sat < 0:
                 self.sat = 100
             self.from_hue()
-
-        elif self.mode == 2:  # val
+        elif self.mode == 5:  # val
             self.val -= 1
             if self.val < 0:
                 self.val = 100
             self.from_hue()
-
-        else:  # rgb
-            if self.mode == 3:  # r
-                self.r -= 1
-                if self.r < 0:
-                    self.r = 255
-            elif self.mode == 4:  # g
-                self.g -= 1
-                if self.g < 0:
-                    self.g = 255
-            elif self.mode == 5:  # b
-                self.b -= 1
-                if self.b < 0:
-                    self.b = 255
-
-            self.from_rgb()
 
         self.update_bl()
         return True
@@ -160,8 +156,7 @@ class Backlight(MenuOption):
         menu.write_row(0, chr(1) + 'Backlight')
         if self.mode < 6:
             row_1 = 'RGB: ' + str(self.r).zfill(3) + ' ' + str(self.g).zfill(3) + ' ' + str(self.b).zfill(3)
-            row_2 = 'HSV: ' + str(int(self.hue * 359)).zfill(3) + ' ' + str(self.sat).zfill(3) + ' ' + str(
-                self.val).zfill(3)
+            row_2 = 'HSV: ' + str(int(self.hue * 359)).zfill(3) + ' ' + str(self.sat).zfill(3) + ' ' + str(self.val).zfill(3)
 
             row_1 = list(row_1)
             row_2 = list(row_2)
