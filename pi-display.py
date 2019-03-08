@@ -23,12 +23,13 @@ from plugins.network import NetworkStatus
 # control redraw with this
 DO_REDRAW = 1
 
-# catch interrupt and turn everything off
+# catch interrupt/systemctl stop  and turn everything off
 def signal_handler(sig, frame):
     backlight.off()
     lcd.clear()
     sys.exit(0)
 signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 def interrupt_self():
     os.kill(os.getpid(), signal.SIGINT)
@@ -49,6 +50,7 @@ def system_power(mode='restart'):
 # nested dicts define menus/submenus to display
 # instances of classes derived from MenuOption used as menu items
 menu = Menu(
+    config_file='/home/dan/displayotron/pi-display/dot3k.cfg',
     structure={
         'Power': {
             'Display Off': IdleDisplay(backlight),
