@@ -95,8 +95,12 @@ class Clock(MenuOption):
             self.mode = 0
 
         if not self.is_setup:
-            menu.lcd.create_char(0, [0, 0, 0, 14, 17, 17, 14, 0])
-            menu.lcd.create_char(1, [0, 0, 0, 14, 31, 31, 14, 0])
+            # these were overwriting custom chars set for Brightness when 
+            # switching between the two apps. 0 and 1 here are small empty/
+            # filled circles used in the old binary clock display, so don't
+            # need them here anyway
+            #menu.lcd.create_char(0, [0, 0, 0, 14, 17, 17, 14, 0])
+            #menu.lcd.create_char(1, [0, 0, 0, 14, 31, 31, 14, 0])
             menu.lcd.create_char(2, [0, 14, 17, 17, 17, 14, 0, 0])
             menu.lcd.create_char(3, [0, 14, 31, 31, 31, 14, 0, 0])
             menu.lcd.create_char(4, [0, 4, 14, 0, 0, 14, 4, 0])  # Up down arrow
@@ -104,13 +108,17 @@ class Clock(MenuOption):
             self.is_setup = True
 
         hour = float(time.strftime('%H'))
-        brightness = 1.0
-        if hour > self.dim_hour:
-            brightness = 1.0 - ((hour - self.dim_hour) / (24.0 - self.dim_hour))
-        elif hour < self.bright_hour:
-            brightness = 1.0 * (hour / self.bright_hour)
 
-        self.set_backlight(brightness)
+        # want to keep manual control of brightness persistent, so only
+        # auto-adjust here if we're at full brightness to start
+        brightness = float(self.get_option('Display', 'brightness', 1.0))
+        if int(brightness) == 1.0:
+            if hour > self.dim_hour:
+                brightness = 1.0 - ((hour - self.dim_hour) / (24.0 - self.dim_hour))
+            elif hour < self.bright_hour:
+                brightness = 1.0 * (hour / self.bright_hour)
+
+            self.set_backlight(brightness)
 
         menu.write_row(0, time.strftime('  %a %H:%M:%S  '))
 

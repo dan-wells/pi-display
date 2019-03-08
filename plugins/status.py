@@ -44,5 +44,6 @@ class SystemStatus(MenuOption):
         memory = self.get_memory()
         menu.write_row(2, memory)
 
+        # refresh this one a bit slower for cpu usage to be more stable
         time.sleep(1.0)
 

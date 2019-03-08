@@ -19,6 +19,7 @@ class IdleDisplay(MenuOption):
             self.r = int(self.get_option('Backlight', 'r', 255))
             self.g = int(self.get_option('Backlight', 'g', 255))
             self.b = int(self.get_option('Backlight', 'b', 255))
+            self.brightness = float(self.get_option('Display', 'brightness', 1.0))
 
     def setup(self, config):
         self.config = config
@@ -26,12 +27,29 @@ class IdleDisplay(MenuOption):
         self.r = int(self.get_option('Backlight', 'r', 255))
         self.g = int(self.get_option('Backlight', 'g', 255))
         self.b = int(self.get_option('Backlight', 'b', 255))
-        self.backlight.rgb(self.r, self.g, self.b)
+        self.brightness = float(self.get_option('Display', 'brightness', 1.0))
+        self.set_brightness(self.brightness)
+        #self.backlight.rgb(self.r, self.g, self.b)
+
+    def set_brightness(self, brightness):
+        brightness += 0.01
+        if brightness > 1.0:
+            brightness = 1.0
+        r = int(self.r * brightness)
+        g = int(self.g * brightness)
+        b = int(self.b * brightness)
+        if self.backlight is not None:
+            self.backlight.rgb(r, g, b)
 
     def redraw(self, menu):
+        # make sure any modified brightness/backlight settings are saved
+        if self.config != menu.config:
+            menu.save()
+            self.config.read('dot3k.cfg')
+            self.setup(self.config)
         menu.lcd.clear()
         self.backlight.off()
 
     def cleanup(self):
         # reset backlight on resume
-        self.backlight.rgb(self.r, self.g, self.b)
+        self.set_brightness(self.brightness)

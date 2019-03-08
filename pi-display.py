@@ -13,7 +13,7 @@ import dothat.touch as touch
 from dot3k.menu import Menu, MenuOption
 
 from plugins.idle_display import IdleDisplay
-from plugins.utils import Backlight, Contrast
+from plugins.utils import Backlight, Contrast, Brightness
 from plugins.clock import Clock
 from plugins.status import SystemStatus
 from plugins.disk import DiskUsage
@@ -57,17 +57,22 @@ menu = Menu(
             'Shutdown': lambda:system_power('shutdown')
         },
         'Settings': {
-            'Contrast': Contrast(lcd),
-            'Backlight': Backlight(backlight)
+            'Brightness': Brightness(backlight),
+            'Backlight': Backlight(backlight),
+            'Contrast': Contrast(lcd)
         }
     },
     lcd=lcd,
     idle_handler=IdleDisplay(backlight),
-    idle_time=60
+    idle_time=10
     )
 
 # use touch module to control menu
 touch.bind_defaults(menu)
+
+# set initial backlight brightness
+# TODO work out how this is actually set on start-up
+menu.menu_options['Settings']['Brightness'].set_brightness()
 
 while DO_REDRAW:
     menu.redraw()

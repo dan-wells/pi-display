@@ -235,3 +235,69 @@ class Contrast(MenuOption):
         menu.write_row(0, 'Contrast')
         menu.write_row(1, chr(0) + 'Value: ' + str(self.contrast))
         menu.clear_row(2)
+
+
+class Brightness(MenuOption):
+    def __init__(self, backlight):
+        self.backlight = backlight
+        self.brightness = 1.0
+        self._icons_setup = False
+        MenuOption.__init__(self)
+
+    def setup(self, config):
+        self.config = config
+        self.mode = 0
+        self.r = int(self.get_option('Backlight', 'r', 255))
+        self.g = int(self.get_option('Backlight', 'g', 255))
+        self.b = int(self.get_option('Backlight', 'b', 255))
+        self.brightness = float(self.get_option('Display', 'brightness', 1.0))
+        #self.backlight.rgb(self.r, self.g, self.b)
+        self.set_brightness(self.brightness)
+
+    def setup_icons(self, menu):
+        menu.lcd.create_char(0, MenuIcon.arrow_left)
+        menu.lcd.create_char(1, MenuIcon.arrow_right)
+        self._icons_setup = True
+
+    def set_brightness(self, brightness=None):
+        # set brightness from config if none passed in
+        # using this to initialize brightness on start-up
+        if brightness == None:
+            brightness = self.brightness
+        brightness += 0.01
+        if brightness > 1.0:
+            brightness = 1.0
+        r = int(int(self.get_option('Backlight', 'r')) * brightness)
+        g = int(int(self.get_option('Backlight', 'g')) * brightness)
+        b = int(int(self.get_option('Backlight', 'b')) * brightness)
+        if self.backlight is not None:
+            self.backlight.rgb(r, g, b)
+        # now this will persist in config
+        self.set_option('Display', 'brightness', str(self.brightness))
+
+    def left(self):
+        self.brightness -= 0.1
+        if self.brightness < 0:
+            self.brightness = 0
+        return True
+
+    def right(self):
+        self.brightness += 0.1
+        if self.brightness > 1:
+            self.brightness = 1
+        return True
+
+    def redraw(self, menu):
+        if not self._icons_setup:
+            self.setup_icons(menu)
+        brightness_pct = self.brightness * 100
+        brightness_str = 'Brightness: {0: >3.0f}%'.format(brightness_pct)
+        menu.write_row(0, brightness_str)
+
+        bar_len = int(self.brightness * 10)
+        bar_str = '  {0}{1: <10}{2}  '.format(chr(0), '|' * bar_len, chr(1))
+        menu.write_row(1, bar_str)
+
+        menu.clear_row(2)
+
+        self.set_brightness(self.brightness)
