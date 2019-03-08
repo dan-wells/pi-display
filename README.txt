@@ -1,5 +1,6 @@
 Code must be run as root to execute commands over /dev interfaces
     pip install dot3k   (then use dothat module)
+Installed as pi-display systemd service.
 
 Modules:
     - Clock (import time)
