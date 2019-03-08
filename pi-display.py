@@ -17,6 +17,7 @@ from plugins.utils import Backlight, Contrast, Brightness
 from plugins.clock import Clock, SimpleClock
 from plugins.status import SystemStatus
 from plugins.disk import DiskUsage
+from plugins.pacman import PacmanStats
 
 # control redraw with this
 DO_REDRAW = 1
@@ -54,7 +55,7 @@ menu = Menu(
             'Shutdown': lambda:system_power('shutdown')
         },
         'Network': MenuOption(),
-        'Updates': MenuOption(),
+        'Updates': PacmanStats(),
         'Clock': SimpleClock(),
         'Settings': {
             'Brightness': Brightness(backlight),

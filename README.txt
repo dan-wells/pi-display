@@ -28,7 +28,7 @@ Modules:
         ----------------
         |Last update:
         |$(tac /var/log/pacman.log | grep -m1 upgraded)
-        |#(checkupdates | wc) available
+        |$(checkupdates | wc) available
 
     - Power
         |restart
