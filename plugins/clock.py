@@ -1,21 +1,44 @@
 import time
 
-from dot3k.menu import MenuOption
+from dot3k.menu import MenuOption, MenuIcon
 
 class SimpleClock(MenuOption):
     def __init__(self):
         MenuOption.__init__(self)
+        self._icons_setup = False
+
+    def setup_icons(self, menu):
+        menu.lcd.create_char(0, MenuIcon.bar_left)
+        menu.lcd.create_char(1, MenuIcon.bar_right)
+        menu.lcd.create_char(2, MenuIcon.bar_full)
+        #menu.lcd.create_char(3, MenuIcon.bar_empty)
+        menu.lcd.create_char(3, [0, 31, 0, 0, 0, 0, 31, 0])
+        self._icons_setup = True
+
+    def cleanup(self):
+        self._icons_setup = False
+
+    def day_progress(self, menu):
+        now = time.localtime(time.time())
+        seconds_today = now.tm_sec + (now.tm_min * 60) + (now.tm_hour * 60 * 60)
+        seconds_max = float(60 * 60 * 24)
+        day_progress = seconds_today / seconds_max
+        # 14 segments to fill bar, 2 for each end
+        bars = int(14 * day_progress)
+        progress_bar = chr(0) + (chr(2) * bars) + (chr(3) * (14 - bars)) + chr(1)
+        return progress_bar
 
     def redraw(self, menu):
-        time_str = time.strftime('  %a %H:%M:%S  ')
+        if not self._icons_setup:
+            self.setup_icons(menu)
+
+        time_str = time.strftime('  %a %H:%M:%S')
         menu.write_row(0, time_str)
 
-        #sep = '{0: ^16}'.format('-' * 14)
-        #menu.write_row(1, sep)
-
-        date_str = time.strftime('    %d %b %y   ')
+        date_str = time.strftime('   %d %b %y')
         menu.write_row(1, date_str)
-        menu.clear_row(2)
+
+        menu.write_row(2, self.day_progress(menu))
 
 
 class Clock(MenuOption):
