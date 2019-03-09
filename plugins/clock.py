@@ -8,24 +8,33 @@ class SimpleClock(MenuOption):
         self._icons_setup = False
 
     def setup_icons(self, menu):
-        menu.lcd.create_char(0, MenuIcon.bar_left)
-        menu.lcd.create_char(1, MenuIcon.bar_right)
-        menu.lcd.create_char(2, MenuIcon.bar_full)
-        #menu.lcd.create_char(3, MenuIcon.bar_empty)
-        menu.lcd.create_char(3, [0, 31, 0, 0, 0, 0, 31, 0])
+        menu.lcd.create_char(6, MenuIcon.bar_left)
+        menu.lcd.create_char(7, MenuIcon.bar_right)
+        menu.lcd.create_char(0, [0, 31, 0, 0, 0, 0, 31, 0]) # empty segment
+        menu.lcd.create_char(1, [0, 31, 0, 16, 16, 0, 31, 0]) # first partial
+        menu.lcd.create_char(2, [0, 31, 0, 24, 24, 0, 31, 0]) # second partial
+        menu.lcd.create_char(3, [0, 31, 0, 28, 28, 0, 31, 0]) # third partial
+        menu.lcd.create_char(4, [0, 31, 0, 30, 30, 0, 31, 0]) # fourth partial
+        menu.lcd.create_char(5, MenuIcon.bar_full)
         self._icons_setup = True
 
     def cleanup(self):
         self._icons_setup = False
 
     def day_progress(self, menu):
+        width = 12
         now = time.localtime(time.time())
         seconds_today = now.tm_sec + (now.tm_min * 60) + (now.tm_hour * 60 * 60)
         seconds_max = float(60 * 60 * 24)
         day_progress = seconds_today / seconds_max
         # 14 segments to fill bar, 2 for each end
-        bars = int(14 * day_progress)
-        progress_bar = chr(0) + (chr(2) * bars) + (chr(3) * (14 - bars)) + chr(1)
+        full_bars = int(width * day_progress)
+        # pick from 5 partial bar segments for progress through this part of the day
+        bar_seconds = seconds_max / width
+        bar_progress = (seconds_today - (bar_seconds * full_bars)) / bar_seconds 
+        partial_bar_idx = int(5 * bar_progress)
+        progress_bar = chr(6) + (chr(5) * full_bars) + chr(partial_bar_idx) + (chr(0) * (width - full_bars - 1)) + chr(7)
+        progress_bar = '{0: ^16}'.format(progress_bar)
         return progress_bar
 
     def redraw(self, menu):
