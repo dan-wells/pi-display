@@ -10,11 +10,12 @@ class SimpleClock(MenuOption):
         time_str = time.strftime('  %a %H:%M:%S  ')
         menu.write_row(0, time_str)
 
-        sep = '{0: ^16}'.format('-' * 14)
-        menu.write_row(1, sep)
+        #sep = '{0: ^16}'.format('-' * 14)
+        #menu.write_row(1, sep)
 
         date_str = time.strftime('    %d %b %y   ')
-        menu.write_row(2, date_str)
+        menu.write_row(1, date_str)
+        menu.clear_row(2)
 
 
 class Clock(MenuOption):

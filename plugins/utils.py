@@ -14,7 +14,7 @@ class Backlight(MenuOption):
         self.r = 0
         self.g = 0
         self.b = 0
-        self.modes = ['h', 's', 'v', 'r', 'g', 'b', 'e']
+        self.modes = ['h', 's', 'v', 'r', 'g', 'b']
         self.from_hue()
         self._icons_setup = False
         MenuOption.__init__(self)
@@ -179,9 +179,6 @@ class Backlight(MenuOption):
 
             menu.write_row(1, ''.join(row_1))
             menu.write_row(2, ''.join(row_2))
-        else:
-            menu.write_row(1, chr(2) + 'Exit')
-            menu.clear_row(2)
 
 
 class Contrast(MenuOption):
