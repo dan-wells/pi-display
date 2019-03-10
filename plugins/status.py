@@ -8,7 +8,7 @@ from dot3k.menu import MenuOption
 class SystemStatus(MenuOption):
     def __init__(self):
         MenuOption.__init__(self)
-        self.uptime_pat = re.compile('up( (?P<days>\d+) days,)?\s+((?P<hours>\d+):)?(?P<mins>\d+)( min)?,')
+        self.uptime_pat = re.compile('up( (?P<days>\d+) days?,)?\s+((?P<hours>\d+):)?(?P<mins>\d+)( min)?,')
 
     def get_uptime(self):
         result = subprocess.run(['uptime'], stdout=subprocess.PIPE)
