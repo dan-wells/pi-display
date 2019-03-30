@@ -20,14 +20,19 @@ class PacmanStats(MenuOption):
             self.last_update_set = 1
 
     def get_update_count(self):
-        result = subprocess.check_output(['checkupdates'])
-        update_list = result.decode('utf8').split('\n')
-        # this is [''] if no updates available
-        if update_list[0]:
-            self.update_count = len(update_list)
-        else:
-            self.update_count = 0
-        self.update_count_set = 1
+        try:
+            result = subprocess.check_output(['checkupdates'])
+            update_list = result.decode('utf8').split('\n')
+            # this is [''] if no updates available
+            if update_list[0]:
+                self.update_count = len(update_list)
+            else:
+                self.update_count = 0
+            self.update_count_set = 1
+        # this is probably no internet connection
+        except subprocess.CalledProcessError:
+            self.update_count_set = 0
+            raise
 
     def redraw(self, menu):
         if (not self.last_update_set) and (not self.update_count_set):
@@ -36,7 +41,12 @@ class PacmanStats(MenuOption):
             menu.clear_row(2)
 
         self.get_last_update()
-        self.get_update_count()
+        try:
+            self.get_update_count()
+        except subprocess.CalledProcessError:
+            menu.write_option(row=2, text='ERROR: Cannot fetch updates',
+                              scroll=True, scroll_delay=1000, scroll_repeat=0,
+                              scroll_padding=' ')
 
         if self.last_update_set:
             menu.write_row(0, "Last update:")
