@@ -17,6 +17,7 @@ class PacmanStats(MenuOption):
             last_update_line = subprocess.check_output(('grep', '-m1', 'upgraded'), stdin=last_update_log.stdout)
             result = last_update_line.decode('utf8')
             self.last_update = re.match('\[(.*?)\]', result).group(1)
+            self.last_update = re.sub('(?<=\d)T(?=\d)', ' ', self.last_update)
             self.last_update_set = 1
 
     def get_update_count(self):
